@@ -2,35 +2,37 @@
 [![](https://img.shields.io/github/actions/workflow/status/soenneker/soenneker.validators.ipaddresses.ssrf/publish-package.yml?style=for-the-badge)](https://github.com/soenneker/soenneker.validators.ipaddresses.ssrf/actions/workflows/publish-package.yml)
 [![](https://img.shields.io/nuget/dt/soenneker.validators.ipaddresses.ssrf.svg?style=for-the-badge)](https://www.nuget.org/packages/soenneker.validators.ipaddresses.ssrf/)
 
-# ![](https://user-images.githubusercontent.com/4441470/224455560-91ed3ee7-f510-4041-a8d2-3fc093025112.png) Soenneker.Validators.IpAddresses.Ssrf
-### IP address validation for SSRF protection
+# Soenneker.Validators.IpAddresses.Ssrf
 
-Determines whether an IPv4 or IPv6 address is publicly routable. Private, loopback,
-link-local, carrier-grade NAT, documentation, benchmarking, multicast, reserved,
-IPv4-mapped IPv6, and other special-use destinations are handled conservatively.
+Validates that an IP address is publicly routable and is not a known SSRF target.
 
-## Installation
+## Install
 
-```
+```bash
 dotnet add package Soenneker.Validators.IpAddresses.Ssrf
 ```
 
-## Usage
+## Quick start
 
 ```csharp
-services.AddSsrfIpAddressValidatorAsSingleton();
+using Soenneker.Validators.IpAddresses.Ssrf.Registrars;
+using Microsoft.Extensions.DependencyInjection;
 
-ISsrfIpAddressValidator validator =
-    serviceProvider.GetRequiredService<ISsrfIpAddressValidator>();
-
-bool isPublic = validator.Validate("8.8.8.8");       // true
-bool isPrivate = validator.Validate("192.168.1.10"); // false
-bool isLoopback = validator.Validate(IPAddress.Loopback); // false
+var services = new ServiceCollection();
+var result = services.AddSsrfIpAddressValidatorAsSingleton();
 ```
 
-`Validate(string)` accepts unambiguous IP address literals only and performs no
-managed allocations. It does not resolve hostnames. Legacy abbreviated, octal, and
-hexadecimal IPv4 forms are rejected.
-For SSRF-safe HTTP requests, resolve every hostname and validate every returned
-address at connection time. Revalidate redirects as well, so DNS rebinding cannot
-bypass an earlier check.
+Adds `ISsrfIpAddressValidator` as a singleton service.
+
+## What you get
+
+- `ISsrfIpAddressValidator` — Validates that an IP address is publicly routable and is not a known SSRF target.
+- `SsrfIpAddressValidatorRegistrar` — IP Address validation for SSRF.
+
+## API at a glance
+
+| API | What it does | Result / important behavior |
+| --- | --- | --- |
+| `ISsrfIpAddressValidator.Validate(address)` | Determines whether an IP address is publicly routable. | `true` when `address` is a publicly routable IPv4 or IPv6 address; otherwise, `false`. |
+| `SsrfIpAddressValidatorRegistrar.AddSsrfIpAddressValidatorAsSingleton(services)` | Adds `ISsrfIpAddressValidator` as a singleton service. | The same service collection, so additional registrations can be chained. |
+| `SsrfIpAddressValidatorRegistrar.AddSsrfIpAddressValidatorAsScoped(services)` | Adds `ISsrfIpAddressValidator` as a scoped service. | The same service collection, so additional registrations can be chained. |
