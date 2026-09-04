@@ -6,6 +6,7 @@ using Soenneker.Validators.IpAddresses.Ssrf.Abstract;
 
 namespace Soenneker.Validators.IpAddresses.Ssrf;
 
+/// <inheritdoc cref="ISsrfIpAddressValidator" />
 public sealed class SsrfIpAddressValidator : Validator.Validator, ISsrfIpAddressValidator
 {
     public SsrfIpAddressValidator(ILogger<SsrfIpAddressValidator> logger) : base(logger)
