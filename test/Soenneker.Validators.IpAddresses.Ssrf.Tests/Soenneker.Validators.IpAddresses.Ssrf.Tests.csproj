@@ -27,4 +27,7 @@
         <ProjectReference Include="..\..\src\Soenneker.Validators.IpAddresses.Ssrf\Soenneker.Validators.IpAddresses.Ssrf.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
+    </ItemGroup>
 </Project>
